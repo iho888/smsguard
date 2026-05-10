@@ -90,4 +90,9 @@ class SsrsVerifierTest {
     fun `verdict for no signal is null`() {
         assertNull(ssrsCheckToVerdict(SsrsCheckOutcome.NoSignal))
     }
+
+    @Test
+    fun `verdict for unknown hash prefix is null - carrier already gated`() {
+        assertNull(ssrsCheckToVerdict(SsrsCheckOutcome.UnknownHashPrefix("csl")))
+    }
 }

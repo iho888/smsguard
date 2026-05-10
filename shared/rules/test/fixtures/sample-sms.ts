@@ -90,6 +90,14 @@ export const BENIGN_SAMPLES: readonly LabeledSms[] = [
     },
     expectedTopLabel: 'no_signal',
   },
+  {
+    name: 'unknown_hash_prefix_benign',
+    sms: {
+      senderId: '#csl',
+      body: 'CSL: Your monthly bill of HKD 388.00 is now ready. Thank you.',
+    },
+    expectedTopLabel: 'no_signal',
+  },
 ];
 
 export const ALL_SAMPLES: readonly LabeledSms[] = [

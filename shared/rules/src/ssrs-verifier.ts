@@ -60,13 +60,10 @@ export function ssrsCheckToVerdict(outcome: SsrsCheckOutcome): Verdict | null {
         },
       };
     case 'unknown_hash_prefix':
-      return {
-        label: 'suspicious',
-        score: 0.4,
-        firedRuleIds: ['ssrs.unknown_hash_prefix'],
-        explanationKey: 'ssrs.unknown_hash_prefix',
-        explanationParams: { prefix: outcome.observedPrefix ?? '' },
-      };
+      // OFCA SSRS gates the # prefix at the carrier, so an unknown-to-us
+      // prefix is still a positive signal that a real org registered it —
+      // not suspicion. Let content/blocklist rules drive the verdict.
+      return null;
     case 'no_signal':
       return null;
   }

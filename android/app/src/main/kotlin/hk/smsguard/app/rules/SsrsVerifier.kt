@@ -49,13 +49,10 @@ fun ssrsCheckToVerdict(outcome: SsrsCheckOutcome): Verdict? = when (outcome) {
             "expected_prefix" to outcome.matchedOrg.expectedPrefix,
         ),
     )
-    is SsrsCheckOutcome.UnknownHashPrefix -> Verdict(
-        label = VerdictLabel.SUSPICIOUS,
-        score = 0.4,
-        firedRuleIds = listOf("ssrs.unknown_hash_prefix"),
-        explanationKey = "ssrs.unknown_hash_prefix",
-        explanationParams = mapOf("prefix" to outcome.observedPrefix),
-    )
+    // OFCA SSRS gates the # prefix at the carrier, so an unknown-to-us
+    // prefix is still a positive signal that a real org registered it —
+    // not suspicion. Let content/blocklist rules drive the verdict.
+    is SsrsCheckOutcome.UnknownHashPrefix -> null
     is SsrsCheckOutcome.NoSignal -> null
 }
 

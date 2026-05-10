@@ -97,4 +97,12 @@ describe('ssrsCheckToVerdict', () => {
     const v = ssrsCheckToVerdict({ outcome: 'no_signal' });
     expect(v).toBeNull();
   });
+
+  it('returns null for unknown_hash_prefix (carrier already gated)', () => {
+    const v = ssrsCheckToVerdict({
+      outcome: 'unknown_hash_prefix',
+      observedPrefix: 'csl',
+    });
+    expect(v).toBeNull();
+  });
 });

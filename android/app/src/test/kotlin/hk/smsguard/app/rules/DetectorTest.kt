@@ -80,4 +80,13 @@ class DetectorTest {
         )
         assertEquals(VerdictLabel.NO_SIGNAL, r.verdict.label)
     }
+
+    @Test
+    fun `unknown hash prefix on benign body returns no signal`() {
+        val r = detect(
+            IncomingSms("#csl", "CSL: Your monthly bill of HKD 388.00 is now ready. Thank you."),
+            ctx,
+        )
+        assertEquals(VerdictLabel.NO_SIGNAL, r.verdict.label)
+    }
 }

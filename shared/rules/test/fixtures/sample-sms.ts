@@ -79,6 +79,22 @@ export const SCAM_SAMPLES: readonly LabeledSms[] = [
     },
     expectedTopLabel: 'likely_scam',
   },
+  {
+    name: 'prize_claim_with_url_en',
+    sms: {
+      senderId: '+852 9876 5432',
+      body: 'please visit http://abcxyz.com to claim your price',
+    },
+    expectedTopLabel: 'likely_scam',
+  },
+  {
+    name: 'prize_claim_with_url_zh',
+    sms: {
+      senderId: '+852 5500 1234',
+      body: '恭喜！您已中獎港幣10000元，請於 https://lucky-prize.com 領取獎金',
+    },
+    expectedTopLabel: 'likely_scam',
+  },
 ];
 
 export const BENIGN_SAMPLES: readonly LabeledSms[] = [
@@ -127,6 +143,14 @@ export const BENIGN_SAMPLES: readonly LabeledSms[] = [
     sms: {
       senderId: '+852 6789 0000',
       body: 'Anti-fraud reminder: Hong Kong Police remind citizens to beware of phishing SMS asking for OTPs.',
+    },
+    expectedTopLabel: 'no_signal',
+  },
+  {
+    name: 'prize_claim_no_url_legit_promo',
+    sms: {
+      senderId: '+852 2200 0000',
+      body: 'Claim your reward at our Mong Kok store this Saturday — show this SMS to staff.',
     },
     expectedTopLabel: 'no_signal',
   },

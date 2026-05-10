@@ -80,6 +80,17 @@ const RULES: readonly ContentRule[] = [
     severity: 'high',
     pattern: /(請(立即)?匯款到|匯款至以下帳戶|please\s+(remit|transfer)\s+to\s+(the\s+following\s+)?account)/i,
   },
+  {
+    // Prize/lottery scam: claim-your-prize phrasing + a URL anywhere in the
+    // body. The URL requirement is what distinguishes scam SMS from legit
+    // promo SMS like "claim your reward at our store" (which usually has no
+    // URL and directs the user to a physical/known channel).
+    id: 'prize_scam.claim_prize_with_url',
+    category: 'prize_scam',
+    severity: 'high',
+    pattern:
+      /(?=[\s\S]*(claim\s+your\s+(prize|price|reward|award|gift|winning|cash)|you\s+(have|'?ve)\s+won|congratulations.{0,30}(winner|prize|won)|您?已?中獎|恭喜.{0,10}中獎|領取.{0,15}(獎(品|金)|獎勵)))(?=[\s\S]*https?:\/\/)/i,
+  },
 ];
 
 export function findContentRuleHits(body: string): ContentRuleHit[] {

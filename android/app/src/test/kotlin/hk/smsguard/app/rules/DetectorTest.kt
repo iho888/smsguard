@@ -149,4 +149,32 @@ class DetectorTest {
         )
         assertEquals(VerdictLabel.NO_SIGNAL, r.verdict.label)
     }
+
+    @Test
+    fun `prize claim language plus url is at least likely scam`() {
+        val r = detect(
+            IncomingSms("+852 9876 5432", "please visit http://abcxyz.com to claim your price"),
+            ctx,
+        )
+        val rank = listOf(
+            VerdictLabel.NO_SIGNAL,
+            VerdictLabel.SUSPICIOUS,
+            VerdictLabel.LIKELY_SCAM,
+            VerdictLabel.HIGH_CONFIDENCE_PHISHING,
+        )
+        assertTrue(rank.indexOf(r.verdict.label) >= rank.indexOf(VerdictLabel.LIKELY_SCAM))
+    }
+
+    @Test
+    fun `prize claim language without url is no signal`() {
+        // Legit promo: "claim your reward" pointing at a physical store, no URL.
+        val r = detect(
+            IncomingSms(
+                "+852 2200 0000",
+                "Claim your reward at our Mong Kok store this Saturday - show this SMS to staff.",
+            ),
+            ctx,
+        )
+        assertEquals(VerdictLabel.NO_SIGNAL, r.verdict.label)
+    }
 }

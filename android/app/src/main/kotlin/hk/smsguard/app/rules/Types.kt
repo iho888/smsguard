@@ -59,6 +59,7 @@ enum class ContentRuleCategory {
     FAKE_BANK,
     MALICIOUS_SHORT_URL,
     REMIT_TO_STRANGER,
+    PRIZE_SCAM,
 }
 
 data class ContentRuleHit(

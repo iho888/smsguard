@@ -59,4 +59,5 @@ export type ContentRuleCategory =
   | 'fake_government'
   | 'fake_bank'
   | 'malicious_short_url'
-  | 'remit_to_stranger';
+  | 'remit_to_stranger'
+  | 'prize_scam';

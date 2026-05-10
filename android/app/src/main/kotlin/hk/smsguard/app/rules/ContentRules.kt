@@ -109,6 +109,19 @@ private val RULES: List<ContentRule> = listOf(
             CI,
         ),
     ),
+    // Prize/lottery scam: claim-your-prize phrasing + a URL anywhere in the
+    // body. The URL requirement distinguishes scam SMS from legit promo SMS
+    // like "claim your reward at our store" (no URL, points to physical
+    // channels).
+    ContentRule(
+        id = "prize_scam.claim_prize_with_url",
+        category = ContentRuleCategory.PRIZE_SCAM,
+        severity = Severity.HIGH,
+        pattern = Regex(
+            "(?=[\\s\\S]*(claim\\s+your\\s+(prize|price|reward|award|gift|winning|cash)|you\\s+(have|'?ve)\\s+won|congratulations.{0,30}(winner|prize|won)|您?已?中獎|恭喜.{0,10}中獎|領取.{0,15}(獎(品|金)|獎勵)))(?=[\\s\\S]*https?://)",
+            CI,
+        ),
+    ),
 )
 
 fun findContentRuleHits(body: String): List<ContentRuleHit> {

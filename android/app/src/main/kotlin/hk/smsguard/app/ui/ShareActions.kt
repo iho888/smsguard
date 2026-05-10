@@ -21,9 +21,10 @@ object ShareActions {
     // TODO: replace with smsguard.hk or Play Store URL once we have one.
     const val INSTALL_URL = "https://github.com/iho888/smsguard"
 
-    // HKPF Scameter — the public anti-fraud lookup service. Opens in browser
-    // for the user to manually paste sender/URL for an official check.
-    const val SCAMETER_URL = "https://www.scameter.gov.hk/"
+    // HKPF Scameter — the public anti-fraud lookup service hosted on the
+    // Anti-Deception Coordination Centre's CyberDefender portal. Opens in a
+    // browser so the user can paste sender/URL for an official check.
+    const val SCAMETER_URL = "https://cyberdefender.hk/scameter/"
 
     fun launchShare(context: Context, record: FlagRecord) {
         val text = buildShareText(record)

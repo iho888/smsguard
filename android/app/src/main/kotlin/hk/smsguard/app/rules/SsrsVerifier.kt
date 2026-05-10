@@ -39,16 +39,9 @@ fun ssrsCheckToVerdict(outcome: SsrsCheckOutcome): Verdict? = when (outcome) {
         explanationKey = "ssrs.trusted",
         explanationParams = mapOf("prefix" to outcome.observedPrefix),
     )
-    is SsrsCheckOutcome.PhishingClaimsOrgWithoutPrefix -> Verdict(
-        label = VerdictLabel.HIGH_CONFIDENCE_PHISHING,
-        score = 0.95,
-        firedRuleIds = listOf("ssrs.org_claimed_without_prefix"),
-        explanationKey = "ssrs.org_claimed_without_prefix",
-        explanationParams = mapOf(
-            "org" to outcome.matchedOrg.canonicalName,
-            "expected_prefix" to outcome.matchedOrg.expectedPrefix,
-        ),
-    )
+    // Detector handles this outcome contextually (URL presence boosts score).
+    // Returning null here keeps SSRS from emitting a hard verdict on its own.
+    is SsrsCheckOutcome.PhishingClaimsOrgWithoutPrefix -> null
     // OFCA SSRS gates the # prefix at the carrier, so an unknown-to-us
     // prefix is still a positive signal that a real org registered it —
     // not suspicion. Let content/blocklist rules drive the verdict.
@@ -62,13 +55,18 @@ private fun extractHashPrefix(senderId: String): String? {
 }
 
 private fun findOrgClaimedInBody(body: String, orgs: List<OrgPrefixMapping>): OrgPrefixMapping? {
-    val lowerBody = body.lowercase()
+    // Only consider an "org claim" when the org name appears at the start of
+    // the message (within the first 30 chars). Real impersonation looks like
+    // "[ORG]:" / "ORG: ...". Mid-text mentions ("防騙：警方提醒...", "Pay your
+    // HSBC card at our shop") are not impersonation and shouldn't trigger.
+    val head = body.take(30)
+    val lowerHead = head.lowercase()
     for (org in orgs) {
         for (alias in org.aliasesZhHk) {
-            if (body.contains(alias)) return org
+            if (head.contains(alias)) return org
         }
         for (alias in org.aliasesEn) {
-            if (lowerBody.contains(alias.lowercase())) return org
+            if (lowerHead.contains(alias.lowercase())) return org
         }
     }
     return null

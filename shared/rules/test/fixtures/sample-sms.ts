@@ -71,6 +71,14 @@ export const SCAM_SAMPLES: readonly LabeledSms[] = [
     },
     expectedTopLabel: 'likely_scam',
   },
+  {
+    name: 'fake_wsd_with_url',
+    sms: {
+      senderId: '+852 9123 4567',
+      body: '水務署: 您有未繳水費，請於3日內到 https://wsd-pay.com 繳交，否則停水',
+    },
+    expectedTopLabel: 'likely_scam',
+  },
 ];
 
 export const BENIGN_SAMPLES: readonly LabeledSms[] = [
@@ -95,6 +103,22 @@ export const BENIGN_SAMPLES: readonly LabeledSms[] = [
     sms: {
       senderId: '#csl',
       body: 'CSL: Your monthly bill of HKD 388.00 is now ready. Thank you.',
+    },
+    expectedTopLabel: 'no_signal',
+  },
+  {
+    name: 'promo_mentions_bank_no_url',
+    sms: {
+      senderId: '+852 5500 0000',
+      body: '10% off all main courses tonight for HSBC Visa cardholders. Quote code DINEHK at the till.',
+    },
+    expectedTopLabel: 'no_signal',
+  },
+  {
+    name: 'mid_text_police_mention_benign',
+    sms: {
+      senderId: '+852 6789 0000',
+      body: 'Anti-fraud reminder: Hong Kong Police remind citizens to beware of phishing SMS asking for OTPs.',
     },
     expectedTopLabel: 'no_signal',
   },

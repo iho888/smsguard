@@ -63,6 +63,19 @@ describe('checkSsrs', () => {
     );
     expect(result.outcome).toBe('no_signal');
   });
+
+  it('does not treat mid-text mention of org name as a claim', () => {
+    // Bare mention deep in a message body should not trigger org-claim — only
+    // impersonation-style "[ORG]:" / "ORG: ..." openings count.
+    const result = checkSsrs(
+      {
+        senderId: '+852 9876 5432',
+        body: 'Anti-fraud reminder: Hong Kong Police remind citizens to beware of phishing SMS.',
+      },
+      TEST_REGISTRY,
+    );
+    expect(result.outcome).toBe('no_signal');
+  });
 });
 
 describe('ssrsCheckToVerdict', () => {
@@ -76,7 +89,7 @@ describe('ssrsCheckToVerdict', () => {
     expect(v!.score).toBe(1.0);
   });
 
-  it('produces a high_confidence_phishing verdict with score >= 0.9', () => {
+  it('returns null for phishing_claims_org_without_prefix (detector applies contextual signal)', () => {
     const v = ssrsCheckToVerdict({
       outcome: 'phishing_claims_org_without_prefix',
       matchedOrg: {
@@ -88,9 +101,7 @@ describe('ssrsCheckToVerdict', () => {
         severity: 'high',
       },
     });
-    expect(v).not.toBeNull();
-    expect(v!.label).toBe('high_confidence_phishing');
-    expect(v!.score).toBeGreaterThanOrEqual(0.9);
+    expect(v).toBeNull();
   });
 
   it('returns null for no_signal outcome', () => {

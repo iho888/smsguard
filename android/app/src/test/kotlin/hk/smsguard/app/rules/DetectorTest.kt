@@ -15,12 +15,57 @@ class DetectorTest {
     }
 
     @Test
-    fun `body claims hsbc without prefix yields high confidence phishing`() {
+    fun `body claims hsbc with urgency credential and url yields high confidence phishing`() {
         val r = detect(
-            IncomingSms("+852 6123 4567", "【匯豐銀行】您的帳戶將被凍結，請即驗證"),
+            IncomingSms(
+                "+852 6123 4567",
+                "【匯豐銀行】您的帳戶將被凍結，請即驗證您的帳戶: http://hsbc-verify.top/auth",
+            ),
             ctx,
         )
         assertEquals(VerdictLabel.HIGH_CONFIDENCE_PHISHING, r.verdict.label)
+    }
+
+    @Test
+    fun `wsd impersonation with url is at least likely scam`() {
+        val r = detect(
+            IncomingSms(
+                "+852 9123 4567",
+                "水務署: 您有未繳水費，請於3日內到 https://wsd-pay.com 繳交，否則停水",
+            ),
+            ctx,
+        )
+        val rank = listOf(
+            VerdictLabel.NO_SIGNAL,
+            VerdictLabel.SUSPICIOUS,
+            VerdictLabel.LIKELY_SCAM,
+            VerdictLabel.HIGH_CONFIDENCE_PHISHING,
+        )
+        assertTrue(rank.indexOf(r.verdict.label) >= rank.indexOf(VerdictLabel.LIKELY_SCAM))
+    }
+
+    @Test
+    fun `bare mention of bank in promo with no url is no signal`() {
+        val r = detect(
+            IncomingSms(
+                "+852 5500 0000",
+                "10% off main courses tonight for HSBC Visa cardholders. Quote DINEHK at the till.",
+            ),
+            ctx,
+        )
+        assertEquals(VerdictLabel.NO_SIGNAL, r.verdict.label)
+    }
+
+    @Test
+    fun `mid-text mention of police in anti-fraud message is no signal`() {
+        val r = detect(
+            IncomingSms(
+                "+852 6789 0000",
+                "Anti-fraud reminder: Hong Kong Police remind citizens to beware of phishing SMS asking for OTPs.",
+            ),
+            ctx,
+        )
+        assertEquals(VerdictLabel.NO_SIGNAL, r.verdict.label)
     }
 
     @Test

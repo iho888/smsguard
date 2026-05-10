@@ -30,13 +30,6 @@ fun detect(sms: IncomingSms, ctx: DetectorContext): DetectionDetail {
     if (ssrsVerdict != null && ssrsVerdict.label == VerdictLabel.TRUSTED) {
         return DetectionDetail(verdict = ssrsVerdict, extractedUrls = emptyList(), contentHits = emptyList())
     }
-    if (ssrsVerdict != null && ssrsVerdict.label == VerdictLabel.HIGH_CONFIDENCE_PHISHING) {
-        return DetectionDetail(
-            verdict = ssrsVerdict,
-            extractedUrls = extractUrls(sms.body),
-            contentHits = findContentRuleHits(sms.body),
-        )
-    }
 
     val urls = extractUrls(sms.body)
     val blockedHits = mutableListOf<String>()
@@ -55,6 +48,19 @@ fun detect(sms: IncomingSms, ctx: DetectorContext): DetectionDetail {
         fired += ssrsVerdict.firedRuleIds
         signalScores += ssrsVerdict.score
     }
+    // Org claim without prefix: contributing signal whose weight depends on
+    // whether the body also has a URL. Plain bank/dept mentions in marketing
+    // chatter shouldn't tip the verdict alone, but org-name at message start
+    // + a URL is a strong impersonation pattern.
+    if (ssrsOutcome is SsrsCheckOutcome.PhishingClaimsOrgWithoutPrefix) {
+        if (urls.isNotEmpty()) {
+            fired += "ssrs.org_claimed_without_prefix_with_url"
+            signalScores += 0.85
+        } else {
+            fired += "ssrs.org_claimed_without_prefix"
+            signalScores += 0.3
+        }
+    }
     for (hit in blockedHits) {
         fired += hit
         signalScores += 0.9
@@ -70,7 +76,7 @@ fun detect(sms: IncomingSms, ctx: DetectorContext): DetectionDetail {
         label = label,
         score = score,
         firedRuleIds = fired,
-        explanationKey = pickExplanationKey(label, blockedHits, contentHits, ssrsVerdict),
+        explanationKey = pickExplanationKey(label, blockedHits, contentHits, ssrsVerdict, fired),
         explanationParams = emptyMap(),
     )
     return DetectionDetail(verdict = verdict, extractedUrls = urls, contentHits = contentHits)
@@ -104,8 +110,10 @@ private fun pickExplanationKey(
     blockedHits: List<String>,
     contentHits: List<ContentRuleHit>,
     ssrsVerdict: Verdict?,
+    fired: List<String>,
 ): String {
     if (ssrsVerdict != null && ssrsVerdict.label != VerdictLabel.NO_SIGNAL) return ssrsVerdict.explanationKey
+    if (fired.any { it.startsWith("ssrs.org_claimed_without_prefix") }) return "ssrs.org_claimed_without_prefix"
     if (blockedHits.isNotEmpty()) return "blocklist.url_or_domain"
     if (contentHits.isNotEmpty()) return "content.${contentHits[0].category.name.lowercase()}"
     return "verdict.${label.name.lowercase()}"

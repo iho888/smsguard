@@ -51,5 +51,13 @@ export const TEST_REGISTRY: SsrsRegistry = {
       category: 'gov',
       severity: 'high',
     },
+    {
+      canonicalName: 'Water Supplies Department',
+      aliasesZhHk: ['水務署', '香港水務署'],
+      aliasesEn: ['Water Supplies Department', 'WSD HK'],
+      expectedPrefix: 'wsd',
+      category: 'gov',
+      severity: 'high',
+    },
   ],
 };

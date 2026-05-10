@@ -68,7 +68,7 @@ class SsrsVerifierTest {
     }
 
     @Test
-    fun `verdict for phishing has score at least 0_9`() {
+    fun `verdict for phishing claims org without prefix is null - detector applies contextual signal`() {
         val v = ssrsCheckToVerdict(
             SsrsCheckOutcome.PhishingClaimsOrgWithoutPrefix(
                 OrgPrefixMapping(
@@ -81,9 +81,19 @@ class SsrsVerifierTest {
                 ),
             ),
         )
-        assertNotNull(v)
-        assertEquals(VerdictLabel.HIGH_CONFIDENCE_PHISHING, v!!.label)
-        assertTrue(v.score >= 0.9)
+        assertNull(v)
+    }
+
+    @Test
+    fun `mid-text mention of org name is not a claim`() {
+        val outcome = checkSsrs(
+            IncomingSms(
+                "+852 9876 5432",
+                "Anti-fraud reminder: Hong Kong Police remind citizens to beware of phishing SMS.",
+            ),
+            TEST_REGISTRY,
+        )
+        assertEquals(SsrsCheckOutcome.NoSignal, outcome)
     }
 
     @Test

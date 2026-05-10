@@ -34,5 +34,13 @@ val TEST_REGISTRY: SsrsRegistry = SsrsRegistry(
             category = OrgCategory.GOV,
             severity = Severity.HIGH,
         ),
+        OrgPrefixMapping(
+            canonicalName = "Water Supplies Department",
+            aliasesZhHk = listOf("水務署", "香港水務署"),
+            aliasesEn = listOf("Water Supplies Department", "WSD HK"),
+            expectedPrefix = "wsd",
+            category = OrgCategory.GOV,
+            severity = Severity.HIGH,
+        ),
     ),
 )

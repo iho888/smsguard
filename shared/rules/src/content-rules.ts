@@ -41,19 +41,19 @@ const RULES: readonly ContentRule[] = [
   {
     id: 'fake_gov.immigration_dept',
     category: 'fake_government',
-    severity: 'high',
+    severity: 'low',
     pattern: /(入境(事務)?處|香港入境處|immigration\s+department)/i,
   },
   {
     id: 'fake_gov.police_force',
     category: 'fake_government',
-    severity: 'high',
+    severity: 'low',
     pattern: /(警務處|香港警察|hong\s+kong\s+police\s+force)/i,
   },
   {
     id: 'fake_gov.customs',
     category: 'fake_government',
-    severity: 'medium',
+    severity: 'low',
     pattern: /(海關|香港海關|hong\s+kong\s+customs)/i,
   },
   {

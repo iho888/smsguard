@@ -49,16 +49,9 @@ export function ssrsCheckToVerdict(outcome: SsrsCheckOutcome): Verdict | null {
         explanationParams: { prefix: outcome.observedPrefix ?? '' },
       };
     case 'phishing_claims_org_without_prefix':
-      return {
-        label: 'high_confidence_phishing',
-        score: 0.95,
-        firedRuleIds: ['ssrs.org_claimed_without_prefix'],
-        explanationKey: 'ssrs.org_claimed_without_prefix',
-        explanationParams: {
-          org: outcome.matchedOrg?.canonicalName ?? '',
-          expected_prefix: outcome.matchedOrg?.expectedPrefix ?? '',
-        },
-      };
+      // Detector handles this outcome contextually (URL presence boosts score).
+      // Returning null here keeps SSRS from emitting a hard verdict on its own.
+      return null;
     case 'unknown_hash_prefix':
       // OFCA SSRS gates the # prefix at the carrier, so an unknown-to-us
       // prefix is still a positive signal that a real org registered it —
@@ -81,13 +74,19 @@ function findOrgClaimedInBody(
   body: string,
   orgs: readonly OrgPrefixMapping[],
 ): OrgPrefixMapping | undefined {
-  const lowerBody = body.toLowerCase();
+  // Only consider an "org claim" when the org name appears at the start of
+  // the message (within the first 30 chars after stripping leading brackets/
+  // whitespace). Real impersonation looks like "[ORG]:" / "ORG: ...". Mid-
+  // text mentions ("防騙：警方提醒...", "Pay your HSBC card at our shop")
+  // are not impersonation and shouldn't trigger this signal.
+  const head = body.slice(0, 30);
+  const lowerHead = head.toLowerCase();
   for (const org of orgs) {
     for (const alias of org.aliasesZhHk) {
-      if (body.includes(alias)) return org;
+      if (head.includes(alias)) return org;
     }
     for (const alias of org.aliasesEn) {
-      if (lowerBody.includes(alias.toLowerCase())) return org;
+      if (lowerHead.includes(alias.toLowerCase())) return org;
     }
   }
   return undefined;

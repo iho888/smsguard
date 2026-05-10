@@ -58,19 +58,19 @@ private val RULES: List<ContentRule> = listOf(
     ContentRule(
         id = "fake_gov.immigration_dept",
         category = ContentRuleCategory.FAKE_GOVERNMENT,
-        severity = Severity.HIGH,
+        severity = Severity.LOW,
         pattern = Regex("(入境(事務)?處|香港入境處|immigration\\s+department)", CI),
     ),
     ContentRule(
         id = "fake_gov.police_force",
         category = ContentRuleCategory.FAKE_GOVERNMENT,
-        severity = Severity.HIGH,
+        severity = Severity.LOW,
         pattern = Regex("(警務處|香港警察|hong\\s+kong\\s+police\\s+force)", CI),
     ),
     ContentRule(
         id = "fake_gov.customs",
         category = ContentRuleCategory.FAKE_GOVERNMENT,
-        severity = Severity.MEDIUM,
+        severity = Severity.LOW,
         pattern = Regex("(海關|香港海關|hong\\s+kong\\s+customs)", CI),
     ),
     ContentRule(

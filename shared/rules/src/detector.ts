@@ -33,9 +33,6 @@ export function detect(sms: IncomingSms, ctx: DetectorContext): DetectionDetail 
   if (ssrsVerdict !== null && ssrsVerdict.label === 'trusted') {
     return { verdict: ssrsVerdict, extractedUrls: [], contentHits: [] };
   }
-  if (ssrsVerdict !== null && ssrsVerdict.label === 'high_confidence_phishing') {
-    return { verdict: ssrsVerdict, extractedUrls: extractUrls(sms.body), contentHits: findContentRuleHits(sms.body) };
-  }
 
   const urls = extractUrls(sms.body);
   const blockedHits: string[] = [];
@@ -55,6 +52,19 @@ export function detect(sms: IncomingSms, ctx: DetectorContext): DetectionDetail 
     fired.push(...ssrsVerdict.firedRuleIds);
     signalScores.push(ssrsVerdict.score);
   }
+  // Org claim without prefix: a contributing signal whose weight depends on
+  // whether the body also contains a URL. Plain mentions of HSBC/匯豐 in
+  // marketing chatter shouldn't tip the verdict on their own; but org-name
+  // at message start + a URL is a strong impersonation pattern.
+  if (ssrsOutcome.outcome === 'phishing_claims_org_without_prefix') {
+    if (urls.length > 0) {
+      fired.push('ssrs.org_claimed_without_prefix_with_url');
+      signalScores.push(0.85);
+    } else {
+      fired.push('ssrs.org_claimed_without_prefix');
+      signalScores.push(0.3);
+    }
+  }
   for (const hit of blockedHits) {
     fired.push(hit);
     signalScores.push(0.9);
@@ -71,7 +81,7 @@ export function detect(sms: IncomingSms, ctx: DetectorContext): DetectionDetail 
     label,
     score,
     firedRuleIds: fired,
-    explanationKey: pickExplanationKey(label, blockedHits, contentHits, ssrsVerdict),
+    explanationKey: pickExplanationKey(label, blockedHits, contentHits, ssrsVerdict, fired),
     explanationParams: {},
   };
   return { verdict, extractedUrls: urls, contentHits };
@@ -105,9 +115,13 @@ function pickExplanationKey(
   blockedHits: readonly string[],
   contentHits: readonly ContentRuleHit[],
   ssrsVerdict: Verdict | null,
+  fired: readonly string[],
 ): string {
   if (ssrsVerdict !== null && ssrsVerdict.label !== 'no_signal') {
     return ssrsVerdict.explanationKey;
+  }
+  if (fired.some((f) => f.startsWith('ssrs.org_claimed_without_prefix'))) {
+    return 'ssrs.org_claimed_without_prefix';
   }
   if (blockedHits.length > 0) return 'blocklist.url_or_domain';
   if (contentHits.length > 0) return `content.${contentHits[0]!.category}`;

@@ -34,6 +34,25 @@ export function detect(sms: IncomingSms, ctx: DetectorContext): DetectionDetail 
     return { verdict: ssrsVerdict, extractedUrls: [], contentHits: [] };
   }
 
+  // Carrier-verified #prefix that we don't recognize: trust the OFCA
+  // registration. Content rules don't run for #prefix senders because the
+  // whole SSRS scheme is "if you see #, the carrier already verified the
+  // org behind it." Marketing copy from real registered orgs frequently
+  // contains urgency/credential phrasing that would otherwise flag.
+  if (ssrsOutcome.outcome === 'unknown_hash_prefix') {
+    return {
+      verdict: {
+        label: 'no_signal',
+        score: 0.0,
+        firedRuleIds: [`ssrs.carrier_verified:${ssrsOutcome.observedPrefix ?? ''}`],
+        explanationKey: 'ssrs.carrier_verified',
+        explanationParams: { prefix: ssrsOutcome.observedPrefix ?? '' },
+      },
+      extractedUrls: [],
+      contentHits: [],
+    };
+  }
+
   const urls = extractUrls(sms.body);
   const blockedHits: string[] = [];
   for (const u of urls) {

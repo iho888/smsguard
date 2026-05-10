@@ -107,6 +107,14 @@ export const BENIGN_SAMPLES: readonly LabeledSms[] = [
     expectedTopLabel: 'no_signal',
   },
   {
+    name: 'unknown_hash_prefix_marketing_with_urgency',
+    sms: {
+      senderId: '#cathay',
+      body: 'Cathay: Your Asia Miles statement is ready. Verify your account at https://cathay.com/login. Offer expires in 24 hours.',
+    },
+    expectedTopLabel: 'no_signal',
+  },
+  {
     name: 'promo_mentions_bank_no_url',
     sms: {
       senderId: '+852 5500 0000',

@@ -112,6 +112,8 @@ private fun explanationBody(record: FlagRecord): String {
             "The message claims to be from a Hong Kong organization that has registered with OFCA, but the sender ID does not start with the registered #prefix. Real banks and government departments use #prefixes that the carrier verifies before delivery."
         "ssrs.unknown_hash_prefix" ->
             "The sender ID looks like a #prefix but isn't on the OFCA SMS Sender Registration list."
+        "ssrs.carrier_verified" ->
+            "This sender's #prefix was verified by the carrier under the OFCA SMS Sender Registration Scheme. The organization behind it is registered, even though SMSGuard doesn't recognize this specific prefix."
         "blocklist.url_or_domain" ->
             "The link in this message matches an entry on the SMSGuard blocklist."
         else -> {

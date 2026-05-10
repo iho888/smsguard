@@ -134,4 +134,19 @@ class DetectorTest {
         )
         assertEquals(VerdictLabel.NO_SIGNAL, r.verdict.label)
     }
+
+    @Test
+    fun `unknown hash prefix with marketing urgency still returns no signal`() {
+        // Carrier-verified #prefix should NOT be flagged for content rules
+        // alone. Real Cathay/insurance/airline messages legitimately contain
+        // "verify your account", "expires in N hours", etc.
+        val r = detect(
+            IncomingSms(
+                "#cathay",
+                "Cathay: Your Asia Miles statement is ready. Verify your account at https://cathay.com/login. Offer expires in 24 hours.",
+            ),
+            ctx,
+        )
+        assertEquals(VerdictLabel.NO_SIGNAL, r.verdict.label)
+    }
 }

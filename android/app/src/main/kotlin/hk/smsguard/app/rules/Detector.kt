@@ -31,6 +31,25 @@ fun detect(sms: IncomingSms, ctx: DetectorContext): DetectionDetail {
         return DetectionDetail(verdict = ssrsVerdict, extractedUrls = emptyList(), contentHits = emptyList())
     }
 
+    // Carrier-verified #prefix that we don't recognize: trust the OFCA
+    // registration. Content rules don't run for #prefix senders because the
+    // whole SSRS scheme is "if you see #, the carrier already verified the
+    // org behind it." Marketing copy from real registered orgs frequently
+    // contains urgency/credential phrasing that would otherwise flag.
+    if (ssrsOutcome is SsrsCheckOutcome.UnknownHashPrefix) {
+        return DetectionDetail(
+            verdict = Verdict(
+                label = VerdictLabel.NO_SIGNAL,
+                score = 0.0,
+                firedRuleIds = listOf("ssrs.carrier_verified:${ssrsOutcome.observedPrefix}"),
+                explanationKey = "ssrs.carrier_verified",
+                explanationParams = mapOf("prefix" to ssrsOutcome.observedPrefix),
+            ),
+            extractedUrls = emptyList(),
+            contentHits = emptyList(),
+        )
+    }
+
     val urls = extractUrls(sms.body)
     val blockedHits = mutableListOf<String>()
     for (u in urls) {

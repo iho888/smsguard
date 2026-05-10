@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!--
+      Adaptive icon foreground. Adaptive icons are 108x108dp with a 66x66dp
+      safe zone centered (x=21..87, y=21..87). All visual content lives
+      inside this safe zone so launcher masks (circle / squircle / square)
+      don't clip anything important.
+
+      Design: white shield silhouette with a red `#` glyph inside.
+      The shield = SMS protection. The # = OFCA Sender Registration Scheme
+      verification, which is the product's load-bearing positive signal.
+    -->
+
+    <!-- Shield silhouette in white. Top is straight; sides curve inward to
+         a bottom point. Approximate centre (54, 56). -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M28,30 L80,30 C81.1,30 82,30.9 82,32 L82,56 C82,72 70,84 54,90 C38,84 26,72 26,56 L26,32 C26,30.9 26.9,30 28,30 Z" />
+
+    <!-- # glyph inside the shield, in HK-red. Two vertical bars + two
+         horizontal bars, slightly italicized for a "stamp" feel.
+         Centre of glyph is around (54, 58). -->
+    <!-- Vertical left bar -->
+    <path
+        android:fillColor="#D52B1E"
+        android:pathData="M44,42 L48,42 L46,74 L42,74 Z" />
+    <!-- Vertical right bar -->
+    <path
+        android:fillColor="#D52B1E"
+        android:pathData="M62,42 L66,42 L64,74 L60,74 Z" />
+    <!-- Horizontal top bar -->
+    <path
+        android:fillColor="#D52B1E"
+        android:pathData="M40,52 L70,52 L70,56 L40,56 Z" />
+    <!-- Horizontal bottom bar -->
+    <path
+        android:fillColor="#D52B1E"
+        android:pathData="M40,62 L68,62 L68,66 L40,66 Z" />
+
+</vector>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- HK flag bauhinia red. Used as launcher icon background and primary brand color. -->
+    <color name="smsguard_red">#D52B1E</color>
+    <color name="smsguard_red_dark">#A82317</color>
+    <color name="smsguard_white">#FFFFFF</color>
+    <color name="ic_launcher_background">#D52B1E</color>
+</resources>

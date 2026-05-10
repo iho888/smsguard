@@ -54,7 +54,9 @@ object SmsGuardNotifier {
         }
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setSmallIcon(android.R.drawable.stat_sys_warning)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setColor(context.getColor(R.color.smsguard_red))
+            .setColorized(false)
             .setContentTitle(title)
             .setContentText(text)
             .setStyle(NotificationCompat.BigTextStyle().bigText(text))

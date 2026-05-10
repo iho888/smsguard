@@ -80,9 +80,9 @@ object SmsGuardNotifier {
     }
 
     private fun headlineFor(label: VerdictLabel): String = when (label) {
-        VerdictLabel.HIGH_CONFIDENCE_PHISHING -> "⚠ Likely scam SMS"
-        VerdictLabel.LIKELY_SCAM -> "⚠ This SMS may be a scam"
-        VerdictLabel.SUSPICIOUS -> "Heads up — suspicious SMS"
-        else -> "SMS flagged"
+        VerdictLabel.HIGH_CONFIDENCE_PHISHING -> "⚠️ 極大機會係詐騙 / Likely scam SMS"
+        VerdictLabel.LIKELY_SCAM -> "⚠️ 可能係詐騙 / This SMS may be a scam"
+        VerdictLabel.SUSPICIOUS -> "⚠️ 短訊有啲可疑 / Suspicious SMS"
+        else -> "短訊被標記 / SMS flagged"
     }
 }

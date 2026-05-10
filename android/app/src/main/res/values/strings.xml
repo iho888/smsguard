@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">SMSGuard</string>
-    <string name="notification_channel_name">Scam SMS warnings</string>
-    <string name="notification_channel_description">High-priority alerts when an incoming SMS looks like a scam.</string>
+    <string name="notification_channel_name">詐騙短訊警示 / Scam SMS warnings</string>
+    <string name="notification_channel_description">當收到可疑詐騙短訊時，立即發出高優先級提示。\nHigh-priority alerts when an incoming SMS looks like a scam.</string>
 </resources>

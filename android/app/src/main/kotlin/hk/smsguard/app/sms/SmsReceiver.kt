@@ -6,6 +6,7 @@ import android.content.Intent
 import android.provider.Telephony
 import hk.smsguard.app.data.FlagRecord
 import hk.smsguard.app.data.FlagStore
+import hk.smsguard.app.data.SenderBlocklist
 import hk.smsguard.app.rules.BlocklistLookup
 import hk.smsguard.app.rules.DEFAULT_REGISTRY
 import hk.smsguard.app.rules.DetectorContext
@@ -27,6 +28,8 @@ class SmsReceiver : BroadcastReceiver() {
         val ctx = DetectorContext(registry = DEFAULT_REGISTRY, blocklist = BlocklistLookup.EMPTY)
 
         for ((sender, parts) in grouped) {
+            if (SenderBlocklist.isBlocked(sender)) continue
+
             val body = parts.joinToString(separator = "") { it.messageBody ?: "" }
             if (body.isBlank()) continue
 

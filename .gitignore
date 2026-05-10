@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.mobileprovision
+secrets/
+
+# iOS
+ios/**/Pods/
+ios/**/DerivedData/
+ios/**/xcuserdata/
+ios/**/*.xcworkspace/xcuserdata/
+ios/**/build/
+
+# Android
+android/**/build/
+android/.gradle/
+android/local.properties
+android/app/release/
+android/app/google-services.json
+android/captures/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Claude Code local settings
+.claude/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Compiled class files
+*.class
+
+# Generated artifacts (committed only via release process)
+shared/rules/dist-codegen/
+
+# Blocklist bundles (built artifacts, not source)
+tools/blocklist-builder/output/

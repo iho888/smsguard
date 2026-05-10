@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SMSGuard</string>
+    <string name="notification_channel_name">Scam SMS warnings</string>
+    <string name="notification_channel_description">High-priority alerts when an incoming SMS looks like a scam.</string>
+</resources>

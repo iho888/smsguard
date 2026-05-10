@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- READ_SMS is debug-only. Released APKs do not include it; the manifest
+         merger only pulls this file into debug variants. -->
+    <uses-permission android:name="android.permission.READ_SMS"/>
+
+    <application>
+        <activity
+            android:name=".debug.ScanActivity"
+            android:exported="false"
+            android:label="Scan inbox"
+            android:theme="@style/Theme.SMSGuard">
+            <intent-filter>
+                <action android:name="hk.smsguard.app.action.SCAN_INBOX_DEBUG"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
